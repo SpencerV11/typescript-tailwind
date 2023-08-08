@@ -1,23 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import "./App.css";
+
+interface Person {
+  id: number;
+  name: string;
+  favoriteColor?: "Black" | "Blue" | "Orange";
+  number: string;
+}
 
 function App() {
+  const [person, setPerson] = useState<Person[]>([]);
+
+  useEffect(() => {
+    myFunc();
+  }, []);
+
+  const myFunc = async () => {
+    const people = await fetch("http://localhost:3001/api/people").catch(
+      console.error
+    );
+    if (people) {
+      setPerson(await people.json());
+    }
+  };
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        {person.map((person) => {
+          return (
+            <div key={person.id} className="text-3xl font-bold underline">
+              {person.id} {person.name} {person.number}
+            </div>
+          );
+        })}
       </header>
     </div>
   );
